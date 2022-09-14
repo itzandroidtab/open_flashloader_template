@@ -120,7 +120,7 @@ int __attribute__ ((noinline)) Init(const uint32_t address, const uint32_t frequ
     return 0;
 }
 
-int UnInit(const uint32_t function) {
+int __attribute__ ((noinline)) UnInit(const uint32_t function) {
     // TODO: implement uninit
 
     return 0;
@@ -158,14 +158,14 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
 }
 
 #if CHIP_ERASE == true
-    int EraseChip(void) {
+    int __attribute__ ((noinline)) EraseChip(void) {
         // TODO: implement chip erase
         return 0;
     }
 #endif
 
 #if UNIFORM_SECTORS
-    int SEGGER_OPEN_Erase(uint32_t SectorAddr, uint32_t SectorIndex, uint32_t NumSectors) {
+    int __attribute__ ((noinline)) SEGGER_OPEN_Erase(uint32_t SectorAddr, uint32_t SectorIndex, uint32_t NumSectors) {
         // feed the watchdog
         FeedWatchdog();
 
@@ -186,7 +186,7 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
 #endif
 
 #if !NATIVE_READ
-    uint32_t Verify(uint32_t Addr, uint32_t NumBytes, uint8_t *pBuff) {
+    uint32_t __attribute__ ((noinline)) Verify(uint32_t Addr, uint32_t NumBytes, uint8_t *pBuff) {
         // TODO: implement verify
 
         return 0;
@@ -198,7 +198,7 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
         return 0;
     }
 
-    int SEGGER_OPEN_Read(const uint32_t address, const uint32_t size, uint8_t *const data) {
+    int __attribute__ ((noinline)) SEGGER_OPEN_Read(const uint32_t address, const uint32_t size, uint8_t *const data) {
         // TODO: add read implementation
 
         return size;
