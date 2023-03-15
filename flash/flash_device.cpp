@@ -7,7 +7,7 @@
  * <PageSize> = 2 ^ Shift. Shift = 3 => <PageSize> = 2^3 = 8 bytes
  * 
  */
-#define PAGE_SIZE_SHIFT (2)
+#define PAGE_SIZE_SHIFT (8)
 
 /**
  * @brief If value is false the device does not support native read. This 
@@ -37,42 +37,62 @@
  * <SectorSize> = 2 ^ Shift. Shift = 12 => <SectorSize> = 2 ^ 12 = 4096 bytes
  * 
  */
-#define SECTOR_SIZE_SHIFT (2)
+#define SECTOR_SIZE_SHIFT (12)
+
+/**
+ * @brief Use a custom verify. Is optional. Speeds up verifying
+ * 
+ */
+#define CUSTOM_VERIFY (false)
 
 /**
  * @brief Device specific infomation
  * 
  */
 extern "C" {
-    const __attribute__ ((section("DevDscr"), __used__)) flash_device FlashDevice = {
-        flash_drv_version, // driver version
-        "test device", // device name
-        device_type::on_chip, // device type
-        0xA0000000, // base address
-        0x00000400, // flash size
-        4, // page size
-        0, // reserved
-        0xff, // blank value
-        100, // page program timeout
-        3000, // sector erase timeout
+    // declaration for the flash device. If we initialize it here we get
+    // a wrong name in the symbol table
+    extern const struct flash_device FlashDevice;
 
-        // flash sectors
-        {
-            {0x00000400, 0x00000000},
-            end_of_sectors
-        }
-    };
+    // Mark start of <PrgData> segment. Non-static to make sure linker can keep this 
+    // symbol. Dummy needed to make sure that <PrgData> section in resulting ELF file 
+    // is present. Needed by open flash loader logic on PC side
+    volatile int PRGDATA_StartMarker __attribute__ ((section ("PrgData"), __used__));
 }
+
+// definition for the flash device
+const __attribute__ ((section("DevDscr"), __used__)) flash_device FlashDevice = {
+    flash_drv_version, // driver version
+    "test device", // device name
+    device_type::on_chip, // device type
+    0xA0000000, // base address
+    0x00000400, // flash size
+    4, // page size
+    0, // reserved
+    0xff, // blank value
+    100, // page program timeout
+    3000, // sector erase timeout
+
+    // flash sectors
+    {
+        {0x00000400, 0x00000000},
+        end_of_sectors
+    }
+};
 
 // function overrides when parts are not in use
 #if NATIVE_READ
-    #define VERIFY_FUNC nullptr
     #define BLANK_CHECK_FUNC nullptr
     #define OPEN_READ_FUNC nullptr
 #else
-    #define VERIFY_FUNC Verify
     #define BLANK_CHECK_FUNC BlankCheck
     #define OPEN_READ_FUNC SEGGER_OPEN_Read
+#endif
+
+#if CUSTOM_VERIFY
+    #define VERIFY_FUNC Verify
+#else 
+    #define VERIFY_FUNC nullptr
 #endif
 
 #if CHIP_ERASE
@@ -92,22 +112,27 @@ extern "C" {
  * 
  */
 extern "C" {
-    const uint32_t SEGGER_OFL_Api[13] __attribute__ ((section ("PrgCode"), __used__)) = {
-        reinterpret_cast<uint32_t>(FeedWatchdog),
-        reinterpret_cast<uint32_t>(Init),
-        reinterpret_cast<uint32_t>(UnInit),
-        reinterpret_cast<uint32_t>(EraseSector),
-        reinterpret_cast<uint32_t>(ProgramPage),
-        reinterpret_cast<uint32_t>(BLANK_CHECK_FUNC),
-        reinterpret_cast<uint32_t>(CHIP_ERASE_FUNC),
-        reinterpret_cast<uint32_t>(VERIFY_FUNC),
-        reinterpret_cast<uint32_t>(nullptr), // SEGGER_OPEN_CalcCRC
-        reinterpret_cast<uint32_t>(OPEN_READ_FUNC),
-        reinterpret_cast<uint32_t>(SEGGER_OPEN_Program),
-        reinterpret_cast<uint32_t>(UNIFORM_ERASE_FUNC),
-        reinterpret_cast<uint32_t>(nullptr), // SEGGER_OPEN_Start for turbo mode
-    };
+    // declaration for the OFL Api. If we initialize it here we get
+    // a wrong name in the symbol table
+    extern const uint32_t SEGGER_OFL_Api[13];
 }
+
+// definition of OFL Api
+const uint32_t SEGGER_OFL_Api[13] __attribute__ ((section ("PrgCode"), __used__)) = {
+    reinterpret_cast<uint32_t>(FeedWatchdog),
+    reinterpret_cast<uint32_t>(Init),
+    reinterpret_cast<uint32_t>(UnInit),
+    reinterpret_cast<uint32_t>(EraseSector),
+    reinterpret_cast<uint32_t>(ProgramPage),
+    reinterpret_cast<uint32_t>(BLANK_CHECK_FUNC),
+    reinterpret_cast<uint32_t>(CHIP_ERASE_FUNC),
+    reinterpret_cast<uint32_t>(VERIFY_FUNC),
+    reinterpret_cast<uint32_t>(nullptr), // SEGGER_OPEN_CalcCRC
+    reinterpret_cast<uint32_t>(OPEN_READ_FUNC),
+    reinterpret_cast<uint32_t>(SEGGER_OPEN_Program),
+    reinterpret_cast<uint32_t>(UNIFORM_ERASE_FUNC),
+    reinterpret_cast<uint32_t>(nullptr), // SEGGER_OPEN_Start for turbo mode
+};
 
 void __attribute__ ((noinline)) FeedWatchdog(void) {
     // TODO: implement something to keep the watchdog happy
@@ -185,20 +210,22 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
     }
 #endif
 
+#if CUSTOM_VERIFY
+    uint32_t __attribute__ ((noinline, __used__)) Verify(uint32_t Addr, uint32_t NumBytes, uint8_t *pBuff) {
+        // TODO: implement verify
+
+        return (Addr + NumBytes);
+    }
+#endif
+
 #if !NATIVE_READ
-    uint32_t __attribute__ ((noinline)) Verify(uint32_t Addr, uint32_t NumBytes, uint8_t *pBuff) {
+    int __attribute__ ((noinline, __used__)) BlankCheck(const uint32_t address, const uint32_t size, const uint8_t blank_value) {
         // TODO: implement verify
 
         return 0;
     }
 
-    int __attribute__ ((noinline)) BlankCheck(const uint32_t address, const uint32_t size, const uint8_t blank_value) {
-        // TODO: implement blankcheck
-
-        return 0;
-    }
-
-    int __attribute__ ((noinline)) SEGGER_OPEN_Read(const uint32_t address, const uint32_t size, uint8_t *const data) {
+    int __attribute__ ((noinline, __used__)) SEGGER_OPEN_Read(const uint32_t address, const uint32_t size, uint8_t *const data) {
         // TODO: add read implementation
 
         return size;

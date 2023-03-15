@@ -68,6 +68,7 @@ target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
 target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fconcepts>)
 target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cxa-get-exception-ptr>)
 target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cxa-atexit>)
+target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>)
 
 # set the cpu options for the linker
 target_link_options(flash_loader PRIVATE "-march=armv7e-m")
@@ -75,8 +76,8 @@ target_link_options(flash_loader PRIVATE "-mcpu=cortex-m4")
 target_link_options(flash_loader PRIVATE "-mthumb")
 
 # other linker options
-target_link_options(flash_loader PRIVATE "-ffunction-sections")
-target_link_options(flash_loader PRIVATE "-fdata-sections")
+target_link_options(flash_loader PUBLIC "-ffunction-sections")
+target_link_options(flash_loader PUBLIC "-fdata-sections")
 target_link_options(flash_loader PUBLIC "-nostdlib")
 target_link_options(flash_loader PUBLIC "-nodefaultlibs")
 target_link_options(flash_loader PUBLIC "-nostartfiles")
@@ -91,5 +92,5 @@ target_link_options(flash_loader PUBLIC "-T${CMAKE_SOURCE_DIR}/linkerscript.ld")
 # Custom commands for processing the build binary and show some statistics and debug info 
 add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objcopy ARGS -O binary -R .bss -R .stack flash_loader.elf flash_loader.bin)
 add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objdump ARGS -C -S flash_loader.elf > flash_loader.lss)
-add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objdump ARGS -C -sj .flash_device -sj .bss -sj .data -sj .rodata -S flash_loader.elf > flash_loader.memory)
+add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objdump ARGS -C -sj PrgCode -sj DevDscr -sj .bss -sj .data -sj .rodata -S flash_loader.elf > flash_loader.memory)
 add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-size ARGS -A flash_loader.elf -x)
