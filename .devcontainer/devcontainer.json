@@ -2,5 +2,5 @@
   "image": "mcr.microsoft.com/devcontainers/universal:2",
   "features": {
   },
-  "initializeCommand": "./.devcontainer/postcreate.sh"
+  "initializeCommand": "chmod +x ./.devcontainer/postcreate.sh && ./.devcontainer/postcreate.sh"
 }
