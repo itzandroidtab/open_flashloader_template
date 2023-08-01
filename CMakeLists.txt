@@ -85,6 +85,7 @@ target_link_options(flash_loader PUBLIC "-Wl,--gc-sections")
 target_link_options(flash_loader PUBLIC "-Wl,-fatal-warnings")
 target_link_options(flash_loader PUBLIC "-Wl,-cref,-Map=flash_loader.map")
 target_link_options(flash_loader PUBLIC "-Wl,--print-memory-usage")
+target_link_options(flash_loader PUBLIC "-Wl,--no-warn-rwx-segments")
 
 # link to the linkerscript of the target cpu
 target_link_options(flash_loader PUBLIC "-T${CMAKE_SOURCE_DIR}/linkerscript.ld")
