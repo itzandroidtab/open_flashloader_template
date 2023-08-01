@@ -1,4 +1,4 @@
-mkdir ../arm-none-eabi/
+mkdir -p ../arm-none-eabi/
 cd ../arm-none-eabi/
 
 if [ ! -f ./arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi.tar.xz ]
