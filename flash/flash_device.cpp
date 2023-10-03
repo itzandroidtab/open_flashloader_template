@@ -169,13 +169,16 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
 
     for (uint32_t i = 0; i < pages; i++) {
         // program a page
-        int r = ProgramPage(address + (i * PAGE_SIZE_SHIFT), (0x1 << PAGE_SIZE_SHIFT), &data[i * PAGE_SIZE_SHIFT]);
+        int r = ProgramPage(address, (0x1 << PAGE_SIZE_SHIFT), data);
 
         // check if something went wrong
         if (r) {
             // return a error
             return 1;
         }
+
+        address += (0x1 << PAGE_SIZE_SHIFT);
+        data += (0x1 << PAGE_SIZE_SHIFT);
     }
 
     // return everything went oke
@@ -203,6 +206,9 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
                 // return we have a error
                 return 1;
             }
+
+            // go to the next sector address
+            SectorAddr += (1 << SECTOR_SIZE_SHIFT);
         }
 
         // return everything went oke
@@ -220,7 +226,7 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
 
 #if !NATIVE_READ
     int __attribute__ ((noinline, __used__)) BlankCheck(const uint32_t address, const uint32_t size, const uint8_t blank_value) {
-        // TODO: implement verify
+        // TODO: implement blank check
 
         return 0;
     }
