@@ -46,7 +46,9 @@
 #define CUSTOM_VERIFY (false)
 
 /**
- * @brief Allow changes in the sector arrangement on 
+ * @brief Enable changes to the sector layout at runtime. Can be used to create
+ * one flash loader that supports multiple chips (like multiple variants of the
+ * same NOR flash)
  * 
  */
 #define RUNTIME_SECTORS (false)
@@ -259,7 +261,7 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
 
         // set the flash data
         for (uint32_t i = 0; i < info->count; i++) {
-            // update every sector
+            // set every sector (data pointer points is not set to something specific)
             info->sectors[i] = {
                 // set the start offset for the current sector
                 .offset = i * 0x100,
