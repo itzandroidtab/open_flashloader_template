@@ -46,6 +46,13 @@
 #define CUSTOM_VERIFY (false)
 
 /**
+ * @brief Allow changes in the sector arrangement on 
+ * 
+ */
+#define RUNTIME_SECTORS (false)
+
+
+/**
  * @brief Device specific infomation
  * 
  */
@@ -76,7 +83,7 @@ const __attribute__ ((section("DevDscr"), __used__)) flash_device FlashDevice = 
     // flash sectors
     {
         {0x00000400, 0x00000000},
-        end_of_sectors
+        device::end_of_sectors
     }
 };
 
@@ -107,6 +114,12 @@ const __attribute__ ((section("DevDscr"), __used__)) flash_device FlashDevice = 
     #define UNIFORM_ERASE_FUNC nullptr
 #endif
 
+#if RUNTIME_SECTORS
+    #define RUNTIME_SECTORS_FUNC SEGGER_OPEN_GetFlashInfo
+#else
+    #define RUNTIME_SECTORS_FUNC nullptr
+#endif
+
 /**
  * @brief array with all the functions for the segger software
  * 
@@ -114,11 +127,11 @@ const __attribute__ ((section("DevDscr"), __used__)) flash_device FlashDevice = 
 extern "C" {
     // declaration for the OFL Api. If we initialize it here we get
     // a wrong name in the symbol table
-    extern const uint32_t SEGGER_OFL_Api[13];
+    extern const uint32_t SEGGER_OFL_Api[];
 }
 
 // definition of OFL Api
-const uint32_t SEGGER_OFL_Api[13] __attribute__ ((section ("PrgCode"), __used__)) = {
+const uint32_t SEGGER_OFL_Api[] __attribute__ ((section ("PrgCode"), __used__)) = {
     reinterpret_cast<uint32_t>(FeedWatchdog),
     reinterpret_cast<uint32_t>(Init),
     reinterpret_cast<uint32_t>(UnInit),
@@ -132,6 +145,7 @@ const uint32_t SEGGER_OFL_Api[13] __attribute__ ((section ("PrgCode"), __used__)
     reinterpret_cast<uint32_t>(SEGGER_OPEN_Program),
     reinterpret_cast<uint32_t>(UNIFORM_ERASE_FUNC),
     reinterpret_cast<uint32_t>(nullptr), // SEGGER_OPEN_Start for turbo mode
+    reinterpret_cast<uint32_t>(RUNTIME_SECTORS_FUNC),
 };
 
 void __attribute__ ((noinline)) FeedWatchdog(void) {
@@ -235,5 +249,29 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
         // TODO: add read implementation
 
         return size;
+    }
+#endif
+
+#if RUNTIME_SECTORS
+    int __attribute__ ((noinline, __used__)) SEGGER_OPEN_GetFlashInfo(flash_info *const info, uint32_t InfoAreaSize) {
+        // set the sector count (max is 7)
+        info->count = 7;
+
+        // set the flash data
+        for (uint32_t i = 0; i < info->count; i++) {
+            // update every sector
+            info->sectors[i] = {
+                // set the start offset for the current sector
+                .offset = i * 0x100,
+                
+                // set the sector size
+                .size = 0x100,
+
+                // set the amount of sectors in the section
+                .amount = 10,
+            };
+        }
+
+        return 0;
     }
 #endif

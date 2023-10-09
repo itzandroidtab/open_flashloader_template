@@ -10,6 +10,11 @@ constexpr static uint16_t flash_drv_version = 0x101;
 // to allow more sectors in the flash device
 constexpr static uint32_t max_sectors = 4;
 
+// max amount of sectors in the flash info. Should not be 
+// modified as the j-link software only supports up to 7
+constexpr static uint32_t max_info_sectors = 7;
+
+
 /**
  * @brief Flash device types
  * 
@@ -23,20 +28,22 @@ enum class device_type: uint8_t {
     external_spi = 5
 };
 
-/**
- * @brief Information about a flash sector
- * 
- */
-struct flash_sector {
-    // Sector size in bytes
-    uint32_t size;
+namespace device {
+    /**
+     * @brief Information about a flash sector
+     * 
+     */
+    struct flash_sector {
+        // Sector size in bytes
+        uint32_t size;
 
-    // Address offset on the base address
-    uint32_t offset;
-};
+        // Address offset on the base address
+        uint32_t offset;
+    };
 
-// end of the sector list. Must be present at the end of the sector list
-constexpr static flash_sector end_of_sectors = {0xffffffff, 0xffffffff};
+    // end of the sector list. Must be present at the end of the sector list
+    constexpr static flash_sector end_of_sectors = {0xffffffff, 0xffffffff};
+}
 
 /**
  * @brief Information about the flash device
@@ -74,7 +81,40 @@ struct flash_device {
     uint32_t erase_timeout;
 
     // flash sector layout definition
-    flash_sector sectors[max_sectors];
+    device::flash_sector sectors[max_sectors];
+};
+
+namespace info {
+    /**
+     * @brief Information about a flash sector
+     * 
+     */
+    struct flash_sector {
+        // Offset to the start of the sector
+        uint32_t offset;
+
+        // Sector size in bytes
+        uint32_t size;
+
+        // Amount of sectors
+        uint32_t amount;
+    };
+}
+
+/**
+ * @brief Information about the flash device when changing the 
+ * sectors at runtime
+ * 
+ */
+struct flash_info {
+    // reserved bytes. (J-Link does not care what they are set to)
+    uint32_t reserved[3];
+
+    // sector count
+    uint32_t count;
+
+    // flash info sector layout
+    info::flash_sector sectors[max_info_sectors];
 };
 
 /**
@@ -84,7 +124,7 @@ struct flash_device {
  */
 extern "C" {
     /**
-     * @brief Keil / CMSIS API
+     * @brief Keil / SEGGER API / CMSIS API
      * 
      */
 
@@ -200,6 +240,15 @@ extern "C" {
      * @return int 0 = OK, 1 = Failed
      */
     int SEGGER_OPEN_Erase(uint32_t SectorAddr, uint32_t SectorIndex, uint32_t NumSectors);
+
+    /**
+     * @brief Get the runtime Flash Info
+     * 
+     * @param pInfo 
+     * @param InfoAreaSize 
+     * @return int 
+     */
+    int SEGGER_OPEN_GetFlashInfo(flash_info *const info, uint32_t InfoAreaSize);
 }
 
 #endif
