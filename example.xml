@@ -1,0 +1,8 @@
+<DataBase>
+    <Device>
+        <ChipInfo Vendor="NXP" Name="LPC1756" />
+        <FlashBankInfo Name="NOR Flash" BaseAddr="0xA0000000">
+            <LoaderInfo Name="SPI flash loader" MaxSize="0x01000000" Loader="flash_loader.elf" LoaderType="FLASH_ALGO_TYPE_OPEN" />
+        </FlashBankInfo>
+    </Device>
+</DataBase>
