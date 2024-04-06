@@ -35,7 +35,7 @@ More info can be found at https://wiki.segger.com/J-Link_Device_Support_Kit
 ## Installing your open flash loader
 There are 2 ways to install your open flash loader
 1. Manually copying the executable and xml to `%appdata%/SEGGER/JlinkDevices/vendor/device_family`
-2. Using a installer (like [ofl_installer](https://github.com/itzandroidtab/ofl_installer))
+2. Using a installer (like [open flashloader installer](https://github.com/itzandroidtab/open_flashloader_installer))
 
 ## Example
 A example is available for the [LPC1756 and is25lq040b](https://github.com/itzandroidtab/ofl_lpc1756_is25lq040b). Made using the drivers from: [klib](https://github.com/itzandroidtab/klib).
