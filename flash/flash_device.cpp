@@ -257,11 +257,12 @@ int __attribute__ ((noinline)) SEGGER_OPEN_Program(uint32_t address, uint32_t si
 #if RUNTIME_SECTORS
     int __attribute__ ((noinline, __used__)) SEGGER_OPEN_GetFlashInfo(flash_info *const info, uint32_t InfoAreaSize) {
         // set the sector count (max is 7)
-        info->count = 7;
+        info->count = max_info_sectors;
 
         // set the flash data
         for (uint32_t i = 0; i < info->count; i++) {
-            // set every sector (data pointer points is not set to something specific)
+            // set every sector (we need to update every sector 
+            // we want to use as the data is not filled in)
             info->sectors[i] = {
                 // set the start offset for the current sector
                 .offset = i * 0x100,
