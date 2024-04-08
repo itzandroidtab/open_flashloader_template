@@ -1,5 +1,5 @@
 # Open Flash loader template (OFL)
-Flash loader template without the need for a Keil/Segger DSK license. OFL uses Cmake and arm-none-eabi to build. OFL uses parts of [klib](https://github.com/itzandroidtab/klib/)
+Flash loader template without the need for a Keil/Segger DSK license. OFL uses cmake and arm-none-eabi to build. OFL uses parts of [klib](https://github.com/itzandroidtab/klib/)
 
 ## Create a Flash loader executable
 To create a OFL executable you need the following:
@@ -11,7 +11,7 @@ To create a OFL executable you need the following:
 Note: When using the flash loader no startup code will run. Make sure to initialize any (non const) static and global variables at runtime as they will not be initialized when loading the flash loader.
 
 ## Stack usage
-In the previous documentation Segger reserved 256 bytes of stack for Open flash loaders. In newer versions the documentation mentions 512 bytes of stack with a fallback to 256 bytes for devices with low amounts of memory (for testing, the linkerscript configures 256 bytes of stack). 
+In the previous documentation Segger mensioned they reserve 256 bytes of stack for Open flash loaders. In newer versions the documentation mentions 512 bytes of stack with a fallback to 256 bytes for devices with low amounts of memory (for testing, the linkerscript configures 256 bytes of stack). 
 
 ## Create a flash loader xml file
 SEGGER J-Link uses xml files to add support for external loaders. The xml file configures the follwing:
