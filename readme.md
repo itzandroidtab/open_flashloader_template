@@ -13,6 +13,9 @@ Note: When using the flash loader no startup code will run. Make sure to initial
 ## Stack usage
 In the previous documentation Segger mensioned they reserve 256 bytes of stack for Open flash loaders. In newer versions the documentation mentions 512 bytes of stack with a fallback to 256 bytes for devices with low amounts of memory (for testing, the linkerscript configures 256 bytes of stack). 
 
+## Interrupts
+by default the J-link will disable the global interrupts when starting a flash loader. If your flash loader needs inteerupts (not recommended) the user will need to move the interrupt vector table during init (and revert it when deiniting)
+
 ## Create a flash loader xml file
 SEGGER J-Link uses xml files to add support for external loaders. The xml file configures the follwing:
 * The target Microcontroller for the loader
