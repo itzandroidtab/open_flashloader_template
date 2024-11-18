@@ -8,10 +8,10 @@ To create a OFL executable you need the following:
 * Way to feed the watchdog if enabled
 * A way to restore modified registers after deinit
 
-Note: When using the flash loader no startup code will run. Make sure to initialize any (non const) static and global variables at runtime as they will not be initialized when loading the flash loader.
+:warning: When using the flash loader no startup code will run. Make sure to initialize any (non const) static and global variables at runtime as they will not be initialized when loading the flash loader.
 
 ## Stack usage
-In the previous documentation Segger mensioned they reserve 256 bytes of stack for Open flash loaders. In newer versions the documentation mentions 512 bytes of stack with a fallback to 256 bytes for devices with low amounts of memory (for testing, the linkerscript configures 256 bytes of stack). 
+In the current documentation Segger mentions they reserve 512 bytes for a Open flash loader stack with a fallback to 256 bytes for devices with low amount of memory. The previous versions reserved 256 bytes of memory. By default the linkerscript allocates 256 bytes of stack for testing.
 
 ## Interrupts
 by default the J-link will disable the global interrupts when starting a flash loader. If your flash loader needs interrupts (not recommended) the user will need to move the interrupt vector table during init (and revert it when deiniting)
