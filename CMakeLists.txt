@@ -39,28 +39,28 @@ target_compile_features(flash_loader PUBLIC cxx_std_20)
 set_target_properties(flash_loader PROPERTIES OUTPUT_NAME "flash_loader" SUFFIX ".elf")
 
 # compiler optimisations
-target_compile_options(flash_loader PRIVATE "-g")
-target_compile_options(flash_loader PRIVATE "-Os")
+target_compile_options(flash_loader PUBLIC "-g")
+target_compile_options(flash_loader PUBLIC "-Os")
 
 # set the cpu options for the compiler
-target_compile_options(flash_loader PRIVATE "-march=armv7e-m")
-target_compile_options(flash_loader PRIVATE "-mcpu=cortex-m4")
-target_compile_options(flash_loader PRIVATE "-mthumb")
+target_compile_options(flash_loader PUBLIC "-march=armv7e-m")
+target_compile_options(flash_loader PUBLIC "-mcpu=cortex-m4")
+target_compile_options(flash_loader PUBLIC "-mthumb")
 
 # other compiler settings
-target_compile_options(flash_loader PRIVATE "-Wno-attributes")
-target_compile_options(flash_loader PRIVATE "-fno-non-call-exceptions")
-target_compile_options(flash_loader PRIVATE "-fno-common")
-target_compile_options(flash_loader PRIVATE "-ffunction-sections")
-target_compile_options(flash_loader PRIVATE "-fdata-sections")
-target_compile_options(flash_loader PRIVATE "-fno-exceptions")
-target_compile_options(flash_loader PRIVATE "-Wno-maybe-uninitialized")
-target_compile_options(flash_loader PRIVATE "-Wno-unused-local-typedefs")
-target_compile_options(flash_loader PRIVATE "-Wno-unused-but-set-variable")
-target_compile_options(flash_loader PRIVATE "-Wno-unused-function")
-target_compile_options(flash_loader PRIVATE "-fomit-frame-pointer")
-target_compile_options(flash_loader PRIVATE "-Wall")
-target_compile_options(flash_loader PRIVATE "-Werror")
+target_compile_options(flash_loader PUBLIC "-Wno-attributes")
+target_compile_options(flash_loader PUBLIC "-fno-non-call-exceptions")
+target_compile_options(flash_loader PUBLIC "-fno-common")
+target_compile_options(flash_loader PUBLIC "-ffunction-sections")
+target_compile_options(flash_loader PUBLIC "-fdata-sections")
+target_compile_options(flash_loader PUBLIC "-fno-exceptions")
+target_compile_options(flash_loader PUBLIC "-Wno-maybe-uninitialized")
+target_compile_options(flash_loader PUBLIC "-Wno-unused-local-typedefs")
+target_compile_options(flash_loader PUBLIC "-Wno-unused-but-set-variable")
+target_compile_options(flash_loader PUBLIC "-Wno-unused-function")
+target_compile_options(flash_loader PUBLIC "-fomit-frame-pointer")
+target_compile_options(flash_loader PUBLIC "-Wall")
+target_compile_options(flash_loader PUBLIC "-Werror")
 
 # set the c++ only options
 target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>)
@@ -71,9 +71,9 @@ target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cx
 target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>)
 
 # set the cpu options for the linker
-target_link_options(flash_loader PRIVATE "-march=armv7e-m")
-target_link_options(flash_loader PRIVATE "-mcpu=cortex-m4")
-target_link_options(flash_loader PRIVATE "-mthumb")
+target_link_options(flash_loader PUBLIC "-march=armv7e-m")
+target_link_options(flash_loader PUBLIC "-mcpu=cortex-m4")
+target_link_options(flash_loader PUBLIC "-mthumb")
 
 # other linker options
 target_link_options(flash_loader PUBLIC "-ffunction-sections")
