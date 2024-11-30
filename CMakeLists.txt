@@ -62,6 +62,12 @@ target_compile_options(flash_loader PUBLIC "-fomit-frame-pointer")
 target_compile_options(flash_loader PUBLIC "-Wall")
 target_compile_options(flash_loader PUBLIC "-Werror")
 
+# change all floating point constants to single precision
+add_compile_options("-fsingle-precision-constant")
+
+# enable stack usage
+add_compile_options(-fstack-usage)
+
 # set the c++ only options
 target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>)
 target_compile_options(flash_loader PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
