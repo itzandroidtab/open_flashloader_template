@@ -97,7 +97,7 @@ target_link_options(flash_loader PUBLIC "-Wl,--no-warn-rwx-segments")
 target_link_options(flash_loader PUBLIC "-T${CMAKE_SOURCE_DIR}/linkerscript.ld")
 
 # Custom commands for processing the build binary and show some statistics and debug info 
-add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objcopy ARGS -O binary -R .bss -R .stack flash_loader.elf flash_loader.bin)
+add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objcopy ARGS -O binary -R .stack flash_loader.elf flash_loader.bin)
 add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objdump ARGS -C -S flash_loader.elf > flash_loader.lss)
 add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-objdump ARGS -C -sj PrgCode -sj DevDscr -sj .bss -sj .data -sj .rodata -S flash_loader.elf > flash_loader.memory)
 add_custom_command(TARGET flash_loader DEPENDS ${CMAKE_BINARY_DIR}/flash_loader.elf POST_BUILD COMMAND arm-none-eabi-size ARGS -A flash_loader.elf -x)
