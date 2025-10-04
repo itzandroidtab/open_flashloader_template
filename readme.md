@@ -3,6 +3,7 @@ Flash loader template without the need for a Keil/Segger DSK license. OFL uses c
 
 ## Create a Flash loader executable
 To create a OFL executable you need the following:
+* Information about the RAM of your MCU (needs to be updated in `linkerscript.ld`)
 * A driver for the peripheral the memory is connected to
 * A driver to communicate with the flash memory
 * Way to feed the watchdog if enabled
