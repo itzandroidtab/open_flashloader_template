@@ -83,40 +83,6 @@ SECTIONS
         . = ALIGN(4);
     } > ram
 
-    /* Support C constructors, and C destructors in both user code
-       and the C library. This also provides support for C++ code. */    
-    .preinit_array :
-    {
-        . = ALIGN(4);
-        PROVIDE(__preinit_array_start = .);
-
-        KEEP(*(.preinit_array))
-
-        PROVIDE(__preinit_array_end = .);
-    } > ram
-
-    .init_array :
-    {
-        . = ALIGN(4);
-        PROVIDE(__init_array_start = .);
-
-        KEEP(*(SORT(.init_array.*)))
-        KEEP(*(.init_array))
-
-        PROVIDE(__init_array_end = .);
-    } > ram
-
-    .fini_array :
-    {
-        . = ALIGN(4);
-        PROVIDE(__fini_array_start = .);
-
-        KEEP(*(SORT(.fini_array.*)))
-        KEEP(*(.fini_array))
-        
-        PROVIDE(__fini_array_end = .);
-    } > ram
-
     PrgData :
     {
         . = ALIGN(4);
