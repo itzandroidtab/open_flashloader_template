@@ -18,9 +18,6 @@ int main();
  * attribute "__constructor__". When marked the function will be added to
  * the ".init_array" segment and called before main is called.
  * 
- * @note When running this program in the debugger this will not be called.
- * This means the constructors and other items are not called during startup
- * 
  */
 void __attribute__((__noreturn__, __naked__)) __reset_handler() {
     // initialize the stack pointer. As we are running from ram
