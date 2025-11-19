@@ -123,6 +123,10 @@ struct flash_info {
  * 
  */
 extern "C" {
+    // declaration for the flash device. This has the configuration
+    // for the flash loader
+    extern const struct flash_device FlashDevice;
+
     /**
      * @brief Keil / SEGGER API / CMSIS API
      * 

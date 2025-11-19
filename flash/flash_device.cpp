@@ -59,10 +59,6 @@
  * 
  */
 extern "C" {
-    // declaration for the flash device. If we initialize it here we get
-    // a wrong name in the symbol table
-    extern const struct flash_device FlashDevice;
-
     // Mark start of <PrgData> segment. Non-static to make sure linker can keep this 
     // symbol. Dummy needed to make sure that <PrgData> section in resulting ELF file 
     // is present. Needed by open flash loader logic on PC side
