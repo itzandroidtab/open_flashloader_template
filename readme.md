@@ -11,6 +11,8 @@ To create a OFL executable you need the following:
 
 :warning: When using the flash loader no startup code will run. Make sure to initialize any (non const) static and global variables at runtime as they will not be initialized when loading the flash loader.
 
+More info about setting up the `FlashDevice` can be found at https://open-cmsis-pack.github.io/Open-CMSIS-Pack-Spec/main/html/flashAlgorithm.html
+
 ## Stack usage
 In the current documentation Segger mentions they reserve 512 bytes for a Open flash loader stack with a fallback to 256 bytes for devices with low amount of memory. The previous versions reserved 256 bytes of memory. By default the linkerscript allocates 256 bytes of stack for testing.
 
