@@ -1,4 +1,4 @@
-# Open Flash loader template (OFL)
+# Open Flash loader (OFL) template
 Flash loader template without the need for a Keil/Segger DSK license. OFL uses cmake and arm-none-eabi to build. OFL uses parts of [klib](https://github.com/itzandroidtab/klib/)
 
 ## Create a Flash loader executable
@@ -14,7 +14,7 @@ To create a OFL executable you need the following:
 More info about setting up the `FlashDevice` can be found at https://open-cmsis-pack.github.io/Open-CMSIS-Pack-Spec/main/html/flashAlgorithm.html
 
 ## Stack usage
-In the current documentation Segger mentions they reserve 512 bytes for a Open flash loader stack with a fallback to 256 bytes for devices with low amount of memory. The previous versions reserved 256 bytes of memory. By default the linkerscript allocates 256 bytes of stack for testing.
+In the current documentation Segger mentions they reserve 512 bytes for the OFL stack with a fallback to 256 bytes for devices with low amount of memory. The previous versions reserved 256 bytes of memory. By default the linkerscript allocates 256 bytes of stack for testing.
 
 ## Interrupts
 by default the J-link will disable the global interrupts when starting a flash loader. If your flash loader needs interrupts (not recommended) the user will need to move the interrupt vector table during init (and revert it when deiniting)
