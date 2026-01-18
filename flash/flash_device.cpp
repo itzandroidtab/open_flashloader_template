@@ -65,6 +65,34 @@ extern "C" {
     volatile int PRGDATA_StartMarker __attribute__ ((section ("PrgData"), __used__));
 }
 
+/**
+ * @brief Generic pow function.
+ *
+ * @warning This function is recursive.
+ *
+ * @tparam T
+ * @param base
+ * @param exponent
+ * @return
+ */
+template <typename T>
+consteval T pow(const T base, const uint32_t exponent) {
+    if (exponent == 0) [[unlikely]] {
+        return 1;
+    }
+
+    if (exponent == 1) [[unlikely]] {
+        return base;
+    }
+
+    if ((exponent & 1) == 0) {
+        T rest = pow(base, exponent / 2);
+        return rest * rest;
+    }
+
+    return base * pow(base, exponent - 1);
+}
+
 // definition for the flash device
 const __attribute__ ((section("DevDscr"), __used__)) flash_device FlashDevice = {
     flash_drv_version, // driver version
@@ -72,7 +100,7 @@ const __attribute__ ((section("DevDscr"), __used__)) flash_device FlashDevice = 
     device_type::on_chip, // device type
     0xA0000000, // base address
     0x00000400, // flash size
-    4, // page size
+    pow(2, PAGE_SIZE_SHIFT), // page size
     0, // reserved
     0xff, // blank value
     100, // page program timeout
