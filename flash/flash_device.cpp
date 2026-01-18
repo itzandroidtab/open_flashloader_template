@@ -4,7 +4,7 @@
 /**
  * @brief Smallest amount of data that can be programmed
  * 
- * <PageSize> = 2 ^ Shift. Shift = 3 => <PageSize> = 2^3 = 8 bytes
+ * <PageSize> = 2 ^ Shift. Shift = 8 => <PageSize> = 2^8 = 256 bytes
  * 
  */
 #define PAGE_SIZE_SHIFT (8)
